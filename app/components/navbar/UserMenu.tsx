@@ -5,9 +5,19 @@ import Avatar from "../Avatar";
 import { useCallback, useState } from "react";
 import  MenuItem from "./MenuItem";
 import userRegisterModal from "@/app/hook/useRegisterModal";
+import userLoginModal from "@/app/hook/useLoginModal";
+import { User } from "@prisma/client";
 
-const UserMenu = () => {
+interface userMenuProps{
+    currentUser: User | null
+}
+
+const UserMenu: React.FC<userMenuProps>= ({
+    currentUser
+}) => {
     const RegisterModal = userRegisterModal()
+    const LoginModal = userLoginModal()
+
     const [isOpen, setIsOpen ] = useState(false)
 
     const toggleOpen = useCallback(() => {
@@ -36,14 +46,38 @@ const UserMenu = () => {
             <div className="absolute rounded0xl shadow-md w-[40vw] md:w-3/4
              bg-white overflow-hidden right-0 top-12 text-sm">
                 <div className="flex flex-col cursor-pointer"> 
+                {currentUser ? (
+                     <>
+                     <MenuItem onClick={() => {}}
+                     label="My trips"
+                     />
+                     <MenuItem onClick={()=> {}}
+                     label="My favorites"
+                     />
+                     <MenuItem onClick={()=> {}}
+                     label="My reservations"
+                     />
+                     <MenuItem onClick={()=> {}}
+                     label="My properties"
+                     />
+                     <MenuItem onClick={()=> {}}
+                     label="My Home"
+                     />
+                     <hr />
+                     <MenuItem onClick={()=> {}}
+                     label="Logout"
+                     />
+                 </>
+                ) : (
                     <>
-                        <MenuItem onClick={() => {}}
+                        <MenuItem onClick={LoginModal.onOpen}
                         label="Login"
                         />
                         <MenuItem onClick={RegisterModal.onOpen}
                         label="Sign up"
                         />
                     </>
+                )}
                 </div>
             </div>
     
