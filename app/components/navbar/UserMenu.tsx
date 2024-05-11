@@ -6,17 +6,20 @@ import { useCallback, useState } from "react";
 import  MenuItem from "./MenuItem";
 import userRegisterModal from "@/app/hook/useRegisterModal";
 import userLoginModal from "@/app/hook/useLoginModal";
-import { User } from "@prisma/client";
+
+import { SafeUser } from "@/app/types";
+import userRentModal from "@/app/hook/useRentModal";
 
 interface userMenuProps{
-    currentUser: User | null
+    currentUser?: SafeUser | null
 }
 
 const UserMenu: React.FC<userMenuProps>= ({
     currentUser
 }) => {
-    const RegisterModal = userRegisterModal()
-    const LoginModal = userLoginModal()
+    const registerModal = userRegisterModal()
+    const loginModal = userLoginModal()
+    const rentModal = userRentModal()
 
     const [isOpen, setIsOpen ] = useState(false)
 
@@ -24,10 +27,18 @@ const UserMenu: React.FC<userMenuProps>= ({
         setIsOpen((value) => !value)
     }, [])
 
+    const onRent = useCallback(() => {
+        if (!currentUser){
+            return loginModal.onOpen()
+        }
+
+        rentModal.onOpen()
+    },[currentUser, loginModal,rentModal])
+
     return ( 
         <div className="relative">
             <div className="flex flex-row items-center gap-3">
-                <div onClick={() => {}} 
+                <div onClick={onRent} 
                 className="hidden md:block text-sm font-semibold 
                 py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"> 
                     Your Home
@@ -60,7 +71,7 @@ const UserMenu: React.FC<userMenuProps>= ({
                      <MenuItem onClick={()=> {}}
                      label="My properties"
                      />
-                     <MenuItem onClick={()=> {}}
+                     <MenuItem onClick={rentModal.onOpen}
                      label="My Home"
                      />
                      <hr />
@@ -70,10 +81,10 @@ const UserMenu: React.FC<userMenuProps>= ({
                  </>
                 ) : (
                     <>
-                        <MenuItem onClick={LoginModal.onOpen}
+                        <MenuItem onClick={loginModal.onOpen}
                         label="Login"
                         />
-                        <MenuItem onClick={RegisterModal.onOpen}
+                        <MenuItem onClick={registerModal.onOpen}
                         label="Sign up"
                         />
                     </>

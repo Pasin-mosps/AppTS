@@ -16,11 +16,13 @@ import Heading from "../Heading";
 import Input from "../input/input";
 import toast from "react-hot-toast";
 import Button from "../Button";
+import userLoginModal from "@/app/hook/useLoginModal";
 // toast for alert some thing
 
 
 const RegisterModal = () => {
-    const RegisterModal = userRegisterModal()
+    const registerModal = userRegisterModal()
+    const loginModal = userLoginModal()
     const [isLoading , setIsLoading] = useState(false)
 
     const {
@@ -42,7 +44,7 @@ const RegisterModal = () => {
 
         axios.post('/api/register', data)
         .then(() => {
-            RegisterModal.onClose()
+            registerModal.onClose()
         })
         .catch ((error) => {
             toast.error('some thing is not correct')
@@ -51,6 +53,11 @@ const RegisterModal = () => {
             setIsLoading(false)
         })
     }
+
+    const toggle = useCallback(() => {
+        registerModal.onClose()
+        loginModal.onOpen()
+    }, [ registerModal, loginModal])
 
     const bodyContent = (
         <div className= "flex flex-col gap-4">
@@ -107,7 +114,7 @@ const RegisterModal = () => {
                         Already have an account?
                     </div>
                     <div 
-                    onClick={RegisterModal.onClose}
+                    onClick={toggle}
                     className="text-neutral-800 cursor-pointer hover:underline"
                     >
                         Log in
@@ -120,10 +127,10 @@ const RegisterModal = () => {
     return ( 
         <Modal 
         disabled={isLoading}
-        isOpen={RegisterModal.isOpen}
+        isOpen={registerModal.isOpen}
          title="Register"
          actionLabel="Continue"
-         onClose={RegisterModal.onClose}
+         onClose={registerModal.onClose}
          onSubmit={handleSubmit(onSubmit)}
          body={bodyContent}
          footer = {footerContent}

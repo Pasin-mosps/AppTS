@@ -1,6 +1,4 @@
 "use client"
- 
-
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -13,6 +11,7 @@ const Logo = () => {
     return (
         <div>
              <Image
+             onClick={() => router.push('/')}
             alt="Logo"
             className="hidden md:block cursor-pointer"
             width="100"
@@ -20,9 +19,6 @@ const Logo = () => {
             src="/image/logo1.png"
         />
         </div>
-       
-
-        
      );
 }
 
