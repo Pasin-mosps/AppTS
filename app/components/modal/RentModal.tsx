@@ -6,7 +6,14 @@ import { useMemo, useState } from "react"
 import Heading from "../Heading"
 import { categories } from "../navbar/Categories"
 import CategoryInput from "../input/Categoryinput"
-import { FieldValues, useForm } from "react-hook-form"
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import Input from "../input/input"
+import axios from "axios"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
+import CountrySelect from "../input/CountrySelect"
+import dynamic from "next/dynamic"
+
 
 enum STEPS {
     CATEGORY = 0,
@@ -18,9 +25,11 @@ enum STEPS {
 }
 
 const RentModal = () => {
+    const router = useRouter()
     const rentModal = userRentModal()
 
     const [step, setStep] = useState(STEPS.CATEGORY)
+    const [ isLoading, setIsLoading ] = useState(false)
 
     const { 
         register,
@@ -46,6 +55,11 @@ const RentModal = () => {
     })
 
     const category = watch('category')
+    const location = watch('location')
+
+    const Map = useMemo(() => dynamic(() => import("../Map"),{
+        ssr: false
+    }), [location])
 
     const setCustomValue = (id: string, value: any) =>{
         setValue(id, value, {
@@ -61,6 +75,29 @@ const RentModal = () => {
 
     const onNext = () => {
         setStep((value) => value + 1)
+    }
+
+    const onSubmit : SubmitHandler<FieldValues> = (data) => {
+        if (step != STEPS.PRICE) {
+            return onNext()
+        }
+
+        setIsLoading(true)
+
+        axios.post('/api/listings', data)
+        .then(() => {
+            toast.success('Listing Created!')
+            router.refresh()
+            reset()
+            setStep(STEPS.CATEGORY)
+            rentModal.onClose()
+        })
+        .catch(()=> {
+            toast.error("Something wrong")
+        })
+        .finally(() => {
+            setIsLoading(false)
+        })
     }
 
     const actionLabel = useMemo(() => {
@@ -97,12 +134,44 @@ const RentModal = () => {
             </div>
         </div>
     )
+
+    if (step === STEPS.LOCATION){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                title = "where is your place located"
+                subtitle = "help guests find you"
+                />
+                <CountrySelect
+                value={location}
+                onChange={(value) => setCustomValue('location', value)}
+                />
+                <Map 
+                    center={location?.latlng}
+                />
+            </div>
+        )
+    }
+
+    // if(step === STEPS.INFO){
+    //     bodyContent = (
+    //         <div className="flex flex-col gap-8">
+    //             <Heading 
+    //             title="Share some basics about your place"
+    //             subtitle="What amenities do you have?"
+    //             />
+    //             <Counter
+    //             title=
+
+    //         </div>
+    //     )
+    // }
     
     return (
         <Modal 
         isOpen = {rentModal.isOpen}
         onClose = {rentModal.onClose}
-        onSubmit = {rentModal.onClose}
+        onSubmit = {handleSubmit(onSubmit)}
         actionLabel={actionLabel}
         secondaryActionLabel = {secondaryActionLabel}
         secondaryAction = {step === STEPS.CATEGORY ? undefined : onBack}
