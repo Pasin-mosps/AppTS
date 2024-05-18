@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 import CountrySelect from "../input/CountrySelect"
 import dynamic from "next/dynamic"
+import Counter from "../input/Counter"
+import ImageUpload from "../input/ImageUpload"
 
 
 enum STEPS {
@@ -56,6 +58,9 @@ const RentModal = () => {
 
     const category = watch('category')
     const location = watch('location')
+    const guestCount = watch('guestCount')
+    const roomCount = watch('roomCount')
+    const bathroomCount = watch('bathroomCount')
 
     const Map = useMemo(() => dynamic(() => import("../Map"),{
         ssr: false
@@ -93,6 +98,7 @@ const RentModal = () => {
             rentModal.onClose()
         })
         .catch(()=> {
+            console.error("Error creating listing:", errors)
             toast.error("Something wrong")
         })
         .finally(() => {
@@ -153,19 +159,98 @@ const RentModal = () => {
         )
     }
 
-    // if(step === STEPS.INFO){
-    //     bodyContent = (
-    //         <div className="flex flex-col gap-8">
-    //             <Heading 
-    //             title="Share some basics about your place"
-    //             subtitle="What amenities do you have?"
-    //             />
-    //             <Counter
-    //             title=
+    if(step === STEPS.INFO){
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                title="Share some basics about your place"
+                subtitle="What amenities do you have?"
+                />
+                <Counter
+                title="Guests"
+                subtitle="How many guests do you allow?"
+                value={guestCount}
+                onChange={(value) => setCustomValue('guestCount', value)} 
+                />
+                <hr />
+                <Counter
+                title="Rooms"
+                subtitle="How many Rooms do you have?"
+                value={roomCount}
+                onChange={(value) => setCustomValue('roomCount', value)} 
+                />
+                <hr />
+                <Counter
+                title="Bathroom"
+                subtitle="How many bathroom do you have?"
+                value={bathroomCount}
+                onChange={(value) => setCustomValue('bathroomCount', value)} 
+                />
+            </div>
+        )
+    }
+    if (step === STEPS.IMAGES) {
+        bodyContent = (
+            <div className="flex flex-col gap-9">
+                <Heading 
+                    title = "Add a photo of your place"
+                    subtitle = "Show guests what your place look like"
+                />
+                <ImageUpload />
+            </div>
 
-    //         </div>
-    //     )
-    // }
+        )
+    }
+
+    if (step === STEPS.DESCRIPTION) {
+        bodyContent= (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                    title = "How would describe your place"
+                    subtitle= "Short and sweet work best"
+                />
+
+                <Input 
+                    id = "title"
+                    label="Title"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
+                />
+                <hr />
+                <Input 
+                    id = "description"
+                    label="Description"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
+                />
+            </div>
+        )
+    }
+
+    if (step === STEPS.PRICE) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                    title="Now, sett your price"
+                    subtitle="How much do you charge per night"
+                />
+                  <Input 
+                    id = 'price'
+                    label ="Price"
+                    formatPrice
+                    type="number"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
+                />
+            </div>
+        )
+    }
     
     return (
         <Modal 

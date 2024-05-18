@@ -55,14 +55,14 @@ datasource db {
  model Listing {
    id String @id @default(auto()) @map("_id") @db.ObjectId
    title String
-   descripttion String
+   description String
    imageSrc String
    createdAt DateTime @default(now())
   category String
   roomCount Int
   bathroomCount Int
-  guestCount Int
-  localtionValue String
+  guestCount Int 
+  locationValue String
   userId String @db.ObjectId
   price Int
 
