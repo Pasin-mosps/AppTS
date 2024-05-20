@@ -23,11 +23,11 @@ export default async function Home() {
           <div className='pt-24 grid grids-cols-1 sm:grid-cols-2 md:grids-cols-3 
           lg:grids-cols-4 xl:grids-cols-5 2xl:grids-cols-6 gap-8'>
           </div>
-          {listings.map((listing: any) => {
+          {listings.map((listing) => {
             return (
               <ListingCard
                 currentUser={currentUser}
-                key={listing.id}
+                key={listing.id} 
                 data={listing}
               />
             )

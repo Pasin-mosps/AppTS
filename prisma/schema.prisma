@@ -24,8 +24,8 @@ datasource db {
   emailVerified DateTime?
   image String?
   hashPassword String?
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   favoriteIds String[] @db.ObjectId
 
   accounts Account[]
