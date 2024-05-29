@@ -23,7 +23,7 @@ export async function POST(
         location,
         price
      } = body
-
+     console.log(body)
      for (const [key, value] of Object.entries(body)) {
         if (!value) {
             return NextResponse.error()

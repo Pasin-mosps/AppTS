@@ -5,6 +5,11 @@ import { SafeUser } from "@/app/types"
 import { IconType } from "react-icons"
 import Avatar from "../Avatar"
 import ListingCategory from "./ListingCategory"
+import dynamic from "next/dynamic"
+
+const Map = dynamic(() => import('../Map'), {
+    ssr: false
+})
 
 interface ListingInfoProps {
     user: SafeUser
@@ -12,7 +17,7 @@ interface ListingInfoProps {
         icon: IconType
         label: string
         description: string
-    } | null
+    } | undefined
     description: string
     roomCount: number
     guestCount: number
@@ -65,9 +70,10 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
             <hr />
             <div className="text-lg font-light text-neutral-500">
                 {description}
-                <hr />
             </div>
-        </div>
+            <hr />
+            <Map center={coordinates} />
+            </div>
      );
 }
  

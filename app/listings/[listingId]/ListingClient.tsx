@@ -1,3 +1,4 @@
+"use client"
 import Container from "@/app/components/Container";
 import ListingHead from "@/app/components/listing/ListingHead";
 import ListingInfo from "@/app/components/listing/ListingInfo";
@@ -11,7 +12,7 @@ interface ListingClientProps{
     listing: SafeListing & {
         user: SafeUser
     }
-    currentUser?: SafeUser | null
+    currentUser?: SafeUser | null 
 }
 
 
@@ -38,11 +39,11 @@ const ListingClient: React.FC<ListingClientProps>= ({
                     <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
                         <ListingInfo
                             user={listing.user}
-                            category={listing.category}
+                            category={category}
                             description={listing.description}
-                            roomCOunt={listing.roomCount}
+                            roomCount={listing.roomCount}
                             guestCount={listing.guestCount}
-                            bathRoomCount={listing.bathroomCount}
+                            bathroomCount={listing.bathroomCount}
                             locationValue={listing.locationValue}
                         />
                     </div>

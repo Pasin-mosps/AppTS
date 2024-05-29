@@ -2,13 +2,14 @@ import useCountries from "@/app/hook/useCountry"
 import Heading from "../Heading"
 import Image from "next/image"
 import HeartButton from "../HeartButton"
+import { SafeUser } from "@/app/types"
 
 interface ListingHeadProps {
     title: string
     imageSrc: string
     locationValue: string
     id: string
-    currentUser?: string | null
+    currentUser?: SafeUser | null 
 }
 
 const ListingHead: React.FC<ListingHeadProps>= ({
